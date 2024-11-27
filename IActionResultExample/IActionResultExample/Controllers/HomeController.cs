@@ -1,43 +1,44 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using IActionResultExample.Models;
 
 namespace IActionResultExample.Controllers
 {
     public class HomeController : Controller
     {
-        [Route("bookstore")]
-        public IActionResult Index()
+        [Route("bookstore/{bookid}/{isloggedin}")]
+        public IActionResult Index(int? bookid, bool isloggedin, Book book)
         {
-            if (!Request.Query.ContainsKey("bookid"))
+            if (bookid.HasValue == false)//if (!Request.Query.ContainsKey("bookid"))
             {
                 //Response.StatusCode = 400;
                 //return Content("Book id is not supplied");
                 //return new BadRequestResult();
                 return BadRequest("Book id is not supplied");
             }
-            if (string.IsNullOrEmpty(Convert.ToString(Request.Query["bookid"])))
-            {
-                //Response.StatusCode = 400;
-                //return Content("Book id cant ve null or empty");
-                return BadRequest("Book id cant ve null or empty");
-            }
+            //if(bookid <= 0)//if (string.IsNullOrEmpty(Convert.ToString(Request.Query["bookid"])))
+            //{
+            //    //Response.StatusCode = 400;
+            //    //return Content("Book id cant ve null or empty");
+            //    return BadRequest("Book id cant ve null or empty");
+            //}
 
-            int bookId = Convert.ToInt16(ControllerContext.HttpContext.Request.Query["bookid"]);
+            //int bookId = Convert.ToInt16(ControllerContext.HttpContext.Request.Query["bookid"]);
 
-            if (bookId <= 0)
+            if (bookid <= 0)
             {
                 //Response.StatusCode = 400;
                 //return Content("Book id cant be less or equal to zero");
                 return BadRequest("Book id cant be less or equal to zero");
             }
 
-            if (bookId > 1000)
+            if (bookid > 1000)
             {
                 //Response.StatusCode = 400;
                 //return Content("Book id cant be greater than 1000");
                 return NotFound("Book id cant be greater than 1000");
             }
 
-            if (Convert.ToBoolean(Request.Query["isloggedin"]) == false)
+            if(isloggedin == false)//if (Convert.ToBoolean(Request.Query["isloggedin"]) == false)
             {
                 //Response.StatusCode = 401;
                 //return Content("user must be authenticated");
@@ -52,7 +53,8 @@ namespace IActionResultExample.Controllers
             //return new LocalRedirectResult($"store/books/{bookId}", true);
             //return LocalRedirectPermanent($"store/books/{bookId}");
             //return Redirect($"store/books/{bookId}");
-            return RedirectPermanent($"store/books/{bookId}");
+            //return RedirectPermanent($"store/books/{bookid}");
+            return Content($"<h1>Book Id: {book.BookId}</br>Author: {book.Author}</h1>", "text/html");
         }
     }
 }
